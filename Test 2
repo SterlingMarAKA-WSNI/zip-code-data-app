@@ -1,0 +1,48 @@
+import streamlit as st
+import pandas as pd
+import requests
+
+def get_cdc_places_data(zip_code):
+    """Fetch sample CDC PLACES data for a given ZIP code (mocked for now)."""
+    # Replace with actual API call if needed
+    return {"Health Outcome": "High diabetes rate", "Physical Inactivity": "Above national average"}
+
+def get_eig_data(zip_code):
+    """Fetch sample EIG.org economic data for a given ZIP code (mocked for now)."""
+    # Replace with actual API call if needed
+    return {"Economic Distress Score": "Severe", "Median Income": "$35,000"}
+
+def interpret_data(health_data, economic_data):
+    """Generate insights based on fetched data."""
+    insights = []
+    if "High diabetes rate" in health_data.values():
+        insights.append("This community has a high diabetes rate, indicating a need for better health interventions.")
+    if "Severe" in economic_data.values():
+        insights.append("This area faces severe economic distress, which may impact healthcare access and affordability.")
+    return " ".join(insights) if insights else "No significant concerns detected."
+
+def main():
+    st.title("Zip Code Data Insights")
+    zip_code = st.text_input("Enter a ZIP code:")
+    
+    if zip_code:
+        health_data = get_cdc_places_data(zip_code)
+        economic_data = get_eig_data(zip_code)
+        
+        st.subheader("Health Data")
+        st.write(health_data)
+        
+        st.subheader("Economic Data")
+        st.write(economic_data)
+        
+        st.subheader("Interpretation & Insights")
+        interpretation = interpret_data(health_data, economic_data)
+        st.write(interpretation)
+        
+        if st.button("Download Report"):
+            df = pd.DataFrame({"ZIP Code": [zip_code], "Health Insights": [interpretation]})
+            df.to_csv("zip_code_insights.csv", index=False)
+            st.success("Your report has been downloaded!")
+    
+if __name__ == "__main__":
+    main()
